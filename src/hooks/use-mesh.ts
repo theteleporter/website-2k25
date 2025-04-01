@@ -22,6 +22,9 @@ export interface MeshStore {
     buttons: Mesh[] | null
     sticks: Mesh[] | null
   }
+  services: {
+    clock: Mesh | null
+  }
   blog: {
     lockedDoor: Mesh | null
     door: Mesh | null
@@ -54,6 +57,9 @@ export const useMesh = create<MeshStore>()((set) => ({
   arcade: {
     buttons: null,
     sticks: null
+  },
+  services: {
+    clock: null
   },
   blog: {
     lockedDoor: null,

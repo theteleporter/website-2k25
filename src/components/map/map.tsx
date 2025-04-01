@@ -31,6 +31,7 @@ import {
 } from "@/shaders/material-global-shader"
 import { createNotFoundMaterial } from "@/shaders/material-not-found"
 
+import { Clock } from "../clock"
 import { BakesLoader } from "./bakes"
 import { useGodrays } from "./use-godrays"
 
@@ -100,6 +101,7 @@ export const Map = memo(() => {
   const { scene: routingElementsModel } = useKTX2GLTF(
     routingElementsPath
   ) as unknown as GLTFResult
+  const { scene: clockModel } = useKTX2GLTF("KitCat.glb")
 
   const [officeScene, setOfficeScene] = useState<SceneType>(null)
   const [outdoorScene, setOutdoorScene] = useState<SceneType>(null)
@@ -262,7 +264,7 @@ export const Map = memo(() => {
     routingElementsModel.traverse((child) => traverse(child, { FOG: false }))
     outdoorModel.traverse((child) => traverse(child, { FOG: false }))
     godrayModel.traverse((child) => traverse(child, { GODRAY: true }))
-
+    clockModel.traverse((child) => traverse(child, { GODRAY: true }))
     const godrays: Mesh[] = []
     godrayModel.traverse((child) => {
       if (child instanceof Mesh) godrays.push(child)
@@ -379,6 +381,16 @@ export const Map = memo(() => {
       })
     }
 
+    const clock = clockModel?.getObjectByName("SM_KitCat") as Mesh
+
+    if (!useMesh.getState().services.clock) {
+      useMesh.setState({
+        services: {
+          clock
+        }
+      })
+    }
+
     outdoorCarsModel.traverse((child) => traverse(child, { FOG: false }))
     if (
       !useMesh.getState().outdoorCarsMeshes ||
@@ -468,6 +480,8 @@ export const Map = memo(() => {
       <primitive object={officeItemsModel} />
       <primitive object={outdoorScene} />
       <primitive object={godrayScene} />
+      <primitive object={clockModel} />
+      <Clock />
 
       {/*Arcade */}
       <ArcadeScreen />
